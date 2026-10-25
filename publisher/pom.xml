@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Parent = dependency versions ka BOM. Saari Spring/Jackson/ActiveMQ client versions yahin se
+         manage hoti hain, isliye child dependencies mein <version> likhne ki zaroorat nahi.
+         Alternative: apna BOM import karna, par parent se plugin config bhi free milti hai. -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>4.1.2</version>
+        <relativePath/> <!-- empty = parent Maven repo se lo, local folder se nahi -->
+    </parent>
+
+    <groupId>com.audit</groupId>
+    <artifactId>demo</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>audit-demo</name>
+    <description>ActiveMQ audit event publisher/consumer demo</description>
+
+    <properties>
+        <!-- Boot 4 ka minimum Java 17 hai, toh tumhara JDK 17 bilkul theek hai. -->
+        <java.version>17</java.version>
+    </properties>
+
+    <dependencies>
+        <!-- ActiveMQ Classic (5.x) client + Spring JMS (JmsTemplate, @JmsListener).
+             Ye sirf CLIENT hai, broker alag run hota hai (tcp://localhost:61616).
+             Alternative: starter-artemis, par tumhare paas ActiveMQ 5 hai, isliye ye. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-activemq</artifactId>
+        </dependency>
+
+        <!-- JPA + Hibernate. Isse tables/entities ka kaam hota hai.
+             Iske liye DataSource zaroori hai, isliye neeche H2 diya hai. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <!-- WEB starter: Boot 4 mein iska naam webmvc hai (REST controllers, embedded Tomcat).
+             Isme Jackson 3 (JSON) bhi aata hai, jo java.time (LocalDateTime, Instant)
+             ko khud handle karta hai. Alag jsr310 jar ki zaroorat nahi. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webmvc</artifactId>
+        </dependency>
+
+        <!-- In-memory DB, sirf dev/demo ke liye. Restart pe data chala jaata hai.
+             Production mein isko postgresql/mysql driver se replace karo. -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope> <!-- compile time pe chahiye nahi, sirf runtime pe -->
+        </dependency>
+
+        <!-- ===== Test dependencies ===== -->
+       <!-- <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-activemq-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webmvc-test</artifactId>
+            <scope>test</scope>
+        </dependency>-->
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Executable fat jar banata hai (java -jar) aur mvn spring-boot:run enable karta hai. -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>
